@@ -1,18 +1,13 @@
-# VERSION 1.8.1-1
-# AUTHOR: Matthieu "Puckel_" Roisil
-# DESCRIPTION: Basic Airflow container
-# BUILD: docker build --rm -t puckel/docker-airflow .
-# SOURCE: https://github.com/puckel/docker-airflow
+# VERSION 1.8.2
 
 FROM python:3.6-stretch
-MAINTAINER Puckel_
+MAINTAINER Kumar
 
 # Never prompts the user for choices on installation/configuration of packages
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 
 # Airflow
-#ARG AIRFLOW_VERSION=1.8.1
 ARG AIRFLOW_HOME=/usr/local/airflow
 
 # Define en_US.
@@ -73,7 +68,6 @@ RUN set -ex \
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod 777 /entrypoint.sh
 COPY airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
-RUN mkdir -p /usr/local/airflow/airflow/logs /usr/local/airflow/airflow/dags /usr/local/airflow/airflow/dags/subdags
 RUN chown -R airflow: ${AIRFLOW_HOME}
 
 EXPOSE 8080 5555 8793
