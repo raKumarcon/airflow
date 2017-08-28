@@ -16,7 +16,7 @@ TRY_LOOP="20"
 
 : ${FERNET_KEY:=$(python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)")}
 
-mkdir ~/airflow/logs ~/airflow/dags ~/airflow/dags/subdags
+#mkdir ~/airflow/logs ~/airflow/dags ~/airflow/dags/subdags
 
 # Load DAGs exemples (default: Yes)
 if [ "$LOAD_EX" = "n" ]; then
@@ -76,6 +76,8 @@ then
   if [ "$1" = "webserver" ]; then
     echo "Initialize database..."
     $CMD initdb
+    mkdir ~/airflow/logs ~/airflow/dags ~/airflow/dags/subdags
+    echo "#Create init files for subdags folder" > ~/airflow/dags/subdags/__init__.py
     exec $CMD webserver
   else
     sleep 10
@@ -88,6 +90,8 @@ then
   sed -i "s#broker_url = redis://redis:6379/1#broker_url = redis://$REDIS_PREFIX$REDIS_HOST:$REDIS_PORT/1#" "$AIRFLOW_HOME"/airflow.cfg
   echo "Initialize database..."
   $CMD initdb
+  mkdir ~/airflow/logs ~/airflow/dags ~/airflow/dags/subdags
+  echo "#Create init files for subdags folder" > ~/airflow/dags/subdags/__init__.py  
   exec $CMD webserver &
   exec $CMD scheduler
 # By default we use SequentialExecutor
@@ -100,5 +104,7 @@ else
   sed -i "s#sql_alchemy_conn = postgresql+psycopg2://airflow:airflow@postgres/airflow#sql_alchemy_conn = sqlite:////usr/local/airflow/airflow.db#" "$AIRFLOW_HOME"/airflow.cfg
   echo "Initialize database..."
   $CMD initdb
+  mkdir ~/airflow/logs ~/airflow/dags ~/airflow/dags/subdags
+  echo "#Create init files for subdags folder" > ~/airflow/dags/subdags/__init__.py  
   exec $CMD webserver
 fi
